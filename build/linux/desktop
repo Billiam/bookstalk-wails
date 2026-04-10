@@ -1,0 +1,13 @@
+[Desktop Entry]
+Version=1.0
+Name=My Product
+Comment=A hardcover-friends-wails application
+# The Exec line includes %u to pass the URL to the application
+Exec=/usr/local/bin/hardcover-friends-wails %u
+Terminal=false
+Type=Application
+Icon=hardcover-friends-wails
+Categories=Utility;
+StartupWMClass=hardcover-friends-wails
+
+ 

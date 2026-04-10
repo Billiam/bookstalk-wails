@@ -1,0 +1,10 @@
+[Desktop Entry]
+Type=Application
+Name=hardcover-friends-wails
+Exec=hardcover-friends-wails
+Icon=hardcover-friends-wails
+Categories=Development;
+Terminal=false
+Keywords=wails
+Version=1.0
+StartupNotify=false
