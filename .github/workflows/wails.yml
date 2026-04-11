@@ -36,11 +36,21 @@ jobs:
         run: |
           sudo apt update && sudo apt-get -yq install libwebkit2gtk-4.1-dev gcc-aarch64-linux-gnu
 
-      - name: Install windows dependencies
+      - name: Install windows prerequisite
         if: runner.os == 'Windows'
-        run: winget install NSIS.NSIS --silent
+        shell: pwsh
+        run: |
+          $ErrorActionPreference = 'Stop'
+          Write-Host "Installing Scoop..."
+          Invoke-WebRequest -Uri "https://get.scoop.sh" -OutFile "install.ps1"
+          .\install.ps1 -RunAsAdmin
+          Write-Host "Installing NSIS and UPX via Scoop..."
+          scoop bucket add extras
+          scoop bucket add main
+          scoop install nsis
+          Write-Host "NSIS installed successfully via Scoop"
 
-      #      - uses: ToQuery/wails3-build-action@ceff82ab39973abacd8189beef08f92592c28013
+#      - uses: ToQuery/wails3-build-action@ceff82ab39973abacd8189beef08f92592c28013
 #        with:
 #          pnpm-build: true
 #          build-obfuscate: false
