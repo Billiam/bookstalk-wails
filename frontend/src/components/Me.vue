@@ -4,6 +4,7 @@ import { storeToRefs } from 'pinia'
 import { useUiStore } from '@/stores/ui.js'
 
 import Activity from '@/components/Activity.vue'
+import Link from '@/components/Link.vue'
 import ProfileImage from '@/components/ProfileImage.vue'
 
 const uiStore = useUiStore()
@@ -14,9 +15,9 @@ const { user } = storeToRefs(uiStore)
   <div class="user" v-if="user">
     <ProfileImage :user="user" />
     <div>
-      <a :href="`https://hardcover.app/@${user.username}`" target="_blank" class="mr-1">
+      <Link :href="`https://hardcover.app/@${user.username}`" class="mr-1">
         <span class="username">@{{ user.username }}</span>
-      </a>
+      </Link>
       <div>
         <Activity :date="user.last_activity_at" />
       </div>

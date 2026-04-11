@@ -2,6 +2,7 @@
 import { computed } from 'vue'
 
 import Activity from '@/components/Activity.vue'
+import Link from '@/components/Link.vue'
 import ProfileImage from '@/components/ProfileImage.vue'
 
 const props = defineProps({
@@ -25,22 +26,22 @@ const followedByMe = computed(() => {
       </OverlayBadge>
     </div>
     <div>
-      <a :href="`https://hardcover.app/@${user.username}`" target="_blank" class="mr-1">
+      <Link :href="`https://hardcover.app/@${user.username}`" class="mr-1">
         <span class="username">@{{ user.username }}</span>
-      </a>
+      </Link>
 
       <div>
         <Activity :date="user.last_activity_at" />
       </div>
     </div>
-    <a
+    <Link
       v-tooltip.top="`${user.count} shared reads`"
       class="mr-1"
       :href="`https://hardcover.app/@${user.username}/compare`"
       target="_blank"
     >
       <Tag severity="secondary" :value="user.count" icon="pi pi-book" />
-    </a>
+    </Link>
     <Badge class="mr-1" v-if="followingMe" severity="secondary" value="follows you" />
     <Badge v-if="followedByMe" value="following" />
   </div>

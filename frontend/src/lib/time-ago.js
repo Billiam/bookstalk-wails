@@ -11,7 +11,6 @@ export default (timestamp, locale = 'en') => {
   }
 
   const rtf = new Intl.RelativeTimeFormat(locale, { numeric: 'auto' })
-  console.log({ timestamp, diff })
   if (weeks > 6) {
     return rtf.format(-Math.floor(months), 'month')
   } else if (days > 12) {

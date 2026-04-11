@@ -122,7 +122,7 @@ export const useUserMatch = (ranker) => {
   watch(
     () => ranker.value.config.includeUnrated,
     () => {
-       return fetchRatings()
+      return fetchRatings()
     },
   )
 

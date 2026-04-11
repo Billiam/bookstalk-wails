@@ -1,14 +1,16 @@
 <script setup>
+import Link from '@/components/Link.vue'
+
 const props = defineProps(['user'])
 </script>
 <template>
-  <a :href="`https://hardcover.app/@${props.user.username}`" target="_blank">
+  <Link :href="`https://hardcover.app/@${props.user.username}`">
     <Avatar
       shape="circle"
       :image="`https://production-img.hardcover.app/enlarge?url=${props.user.cached_image.url}&width=60&height=60&type=webp`"
       size="large"
     />
-  </a>
+  </Link>
 </template>
 
 <style scoped>
