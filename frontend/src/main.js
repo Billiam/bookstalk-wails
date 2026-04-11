@@ -1,0 +1,67 @@
+import { definePreset } from '@primeuix/themes'
+import Aura from '@primeuix/themes/aura'
+import { createPinia } from 'pinia'
+import { createApp } from 'vue'
+import { Browser } from '@wailsio/runtime'
+
+import PrimeVue from 'primevue/config'
+import Tooltip from 'primevue/tooltip'
+
+import App from './App.vue'
+
+const app = createApp(App)
+
+const pinia = createPinia()
+app.use(pinia)
+app.provide('pinia', pinia)
+
+app.use(PrimeVue, {
+  theme: {
+    preset: definePreset(Aura, {
+      semantic: {
+        primary: {
+          50: '{teal.50}',
+          100: '{teal.100}',
+          200: '{teal.200}',
+          300: '{teal.300}',
+          400: '{teal.400}',
+          500: '{teal.500}',
+          600: '{teal.600}',
+          700: '{teal.700}',
+          800: '{teal.800}',
+          900: '{teal.900}',
+          950: '{teal.950}',
+        },
+      },
+      options: {
+        prefix: 'p',
+        darkModeSelector: 'system',
+        cssLayer: false,
+      },
+    }),
+  },
+})
+
+app.directive('tooltip', Tooltip)
+app.mount('#app')
+
+document.body.addEventListener('click', (e) => {
+  let target = e.target
+
+  while (target !== document.body) {
+    console.log(target)
+    if (target.nodeName === 'A') {
+      e.preventDefault()
+      e.stopPropagation()
+      Browser.OpenURL(target.href)
+      return
+    }
+    target = target.parentNode
+  }
+  // e.preventDefault()
+  // if (e.target.nodeName === 'A') {
+  //   e.preventDefault()
+  //   e.stopPropagation()
+  //   window.runtime.BrowserOpenURL(e.target.href)
+  // }
+})
