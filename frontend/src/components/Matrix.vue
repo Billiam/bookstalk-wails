@@ -30,18 +30,35 @@ const colorGrade = (value) => {
   }
   return `hsl(${hue} 59.2% 49.1%)`
 }
+const filteredMatrix = computed(() => {
+  const r = ranker.value
+  if (!r.matrix) {
+    return
+  }
+
+  if (r.config.includeUnrated) {
+    return r.matrix
+  }
+
+  return Array.from(r.matrix).reduce((matrix, [key, value]) => {
+    if (key !== 'none') {
+      matrix.set(key, new Map([...value].filter(([sk]) => sk !== 'none')))
+    }
+    return matrix
+  }, new Map())
+})
 </script>
 <template>
   <Panel>
-    <table class="matrix" v-if="ranker.matrix">
+    <table class="matrix" v-if="filteredMatrix">
       <thead>
         <tr>
           <th></th>
-          <th :key="key" v-for="[key] in ranker.matrix">{{ key }}</th>
+          <th :key="key" v-for="[key] in filteredMatrix">{{ key }}</th>
         </tr>
       </thead>
       <tbody>
-        <tr v-for="[key, ranks] in ranker.matrix" :key="key">
+        <tr v-for="[key, ranks] in filteredMatrix" :key="key">
           <th>{{ key }}</th>
           <template v-for="[key, value] in ranks" :key="key">
             <td :style="{ backgroundColor: colorGrade(value) }">{{ value.toFixed(1) }}</td>

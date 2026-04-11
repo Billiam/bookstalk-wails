@@ -18,6 +18,7 @@ const toggle = (event) => {
       <li>Option to ignore already-followed users</li>
       <li>Logo/banner/favicon etc</li>
       <li>Data caching/partial updates</li>
+      <li>Persist settings</li>
     </ul>
   </Popover>
 </template>

@@ -119,12 +119,12 @@ export const useUserMatch = (ranker) => {
     }, 250),
   )
 
-  watch(
-    () => ranker.value.config.includeUnrated,
-    () => {
-      return fetchRatings()
-    },
-  )
+  // watch(
+  //   () => ranker.value.config.includeUnrated,
+  //   () => {
+  //     return fetchRatings()
+  //   },
+  // )
 
   return {
     apiKeyMessage,
