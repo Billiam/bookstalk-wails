@@ -36,26 +36,17 @@ jobs:
         run: |
           sudo apt update && sudo apt-get -yq install libwebkit2gtk-4.1-dev gcc-aarch64-linux-gnu
 
-      - name: Install windows prerequisite
-        if: runner.os == 'Windows'
-        shell: pwsh
-        run: |
-          $ErrorActionPreference = 'Stop'
-          Write-Host "Installing Scoop..."
-          Invoke-WebRequest -Uri "https://get.scoop.sh" -OutFile "install.ps1"
-          .\install.ps1 -RunAsAdmin
-          Write-Host "Installing NSIS and UPX via Scoop..."
-          scoop bucket add extras
-          scoop bucket add main
-          scoop install nsis
-          Write-Host "NSIS installed successfully via Scoop"
+#      - name: Install windows prerequisite
+#        if: runner.os == 'Windows'
+#        shell: pwsh
+#        run: |
+#          $ErrorActionPreference = 'Stop'
+#          Write-Host "Installing Scoop..."
+#          Invoke-WebRequest -Uri "https://get.scoop.sh" -OutFile "install.ps1"
+#          .\install.ps1 -RunAsAdmin
+#          scoop bucket add extras
+#          scoop install nsis
 
-#      - uses: ToQuery/wails3-build-action@ceff82ab39973abacd8189beef08f92592c28013
-#        with:
-#          pnpm-build: true
-#          build-obfuscate: false
-
-      # Setup and configure GoLang
       - name: Setup GoLang
         uses: actions/setup-go@v6
         with:
@@ -63,7 +54,6 @@ jobs:
           cache: true
           cache-dependency-path: 'go.sum'
           go-version: 1.25.9
-
 
 #      - name: Install Garble
 #        run: go install mvdan.cc/garble@latest
@@ -82,7 +72,6 @@ jobs:
         with:
           version: 10
           run_install: false
-
 
       # (Optional) Setup and configure Deno
 #      - name: Setup Deno
@@ -115,7 +104,6 @@ jobs:
         run: |
           ARCHS="${{ matrix.build.platform }}"
           
-          # 根据 Runner OS 判断
           if [[ "${{ runner.os }}" == "macOS" ]]; then
             echo "Detected macOS build"
             if [[ "$ARCHS" == *"universal"* ]]; then
@@ -128,6 +116,7 @@ jobs:
                 echo "Building macOS $arch binary"
                 ARCH=$arch wails3 package
               fi
+              rm bin/bookstalk
             done
           elif [[ "${{ runner.os }}" == "Windows" ]]; then
             echo "Detected Windows build"
@@ -135,7 +124,7 @@ jobs:
               arch=$(echo $arch | xargs)
               if [[ "$arch" == "amd64" || "$arch" == "arm64" ]]; then
                 echo "Building Windows $arch binary"
-                ARCH=$arch wails3 package
+                ARCH=$arch wails3 build
               fi
             done
           elif [[ "${{ runner.os }}" == "Linux" ]]; then
@@ -145,14 +134,15 @@ jobs:
               if [[ "$arch" == "amd64" || "$arch" == "arm64" ]]; then
                 echo "Building Linux $arch binary"
                 ARCH=$arch wails3 package
+                mv bin/bookstalk bin/bookstalk.linux-$arch
               fi
             done
           else
             echo "Unsupported OS: ${{ runner.os }}"
           fi
 
-      # Upload build assets
-      - uses: actions/upload-artifact@v7
+
+      - name: Release
+        uses: softprops/action-gh-release@v2
         with:
-          name: Wails Build ${{runner.os}} ${{matrix.build.platform}}
-          path: ./bin/
+          files: bin/*
