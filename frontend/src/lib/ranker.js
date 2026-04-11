@@ -35,6 +35,7 @@ export default class Ranker {
       matchingNegModifier: 1,
       posBonus: 0.75,
       negPenalty: 0,
+      includeUnrated: false,
     }
     this.matrix = new Map()
   }

@@ -22,43 +22,67 @@ query {
   }
 }`
 
-const myBookQuery = `
-query($userId: Int!, $lastId: Int!, $limit: Int!) {
-  results:user_books(
-    where: {  user_id: { _eq: $userId }, id: { _gt: $lastId }, status_id: { _in: [3, 5]}},
-    limit: $limit
-    order_by: { id: asc }
-  ) {
-    id,
-    book_id,
-    status_id,
-    rating
-    book {
-      users_count
-      title
-    }
-  }
-}`
+const conditionsToGraphql = (conditions) =>
+  Object.entries(conditions)
+    .map(([k, v]) => `${k}: ${v}`)
+    .join(', ')
 
-const otherBookQuery = `
-query($bookIds: [Int!], $userId: Int!, $limit: Int!, $lastId: Int!) {
-  results:user_books(
-    where: {
-      user_id: {_neq: $userId},
-      id: {_gt: $lastId},
-      book_id: {_in: $bookIds},
-      status_id: { _in: [3, 5]}
-    }
-    limit: $limit
-    order_by: { id: asc }
-  ) {
-    id,
-    user_id,
-    book_id,
-    rating,
-    status_id
+const myBookQuery = (rated = true) => {
+  const conditions = {
+    user_id: '{ _eq: $userId }',
+    id: '{ _gt: $lastId }',
+    status_id: '{ _in: [3, 5]}',
   }
-}`
+  if (rated) {
+    conditions['rating'] = '{ _is_null: false }'
+  }
+
+  return `
+  query($userId: Int!, $lastId: Int!, $limit: Int!) {
+    results:user_books(
+      where: { ${conditionsToGraphql(conditions)} },
+      limit: $limit
+      order_by: { id: asc }
+    ) {
+      id,
+      book_id,
+      status_id,
+      rating
+      book {
+        users_count
+        ratings_count
+        title
+      }
+    }
+  }`
+}
+
+const otherBookQuery = (rated = true) => {
+  const conditions = {
+    user_id: '{ _neq: $userId }',
+    id: '{ _gt: $lastId }',
+    book_id: '{ _in: $bookIds }',
+    status_id: '{ _in: [3, 5] }',
+  }
+  if (rated) {
+    conditions['rating'] = '{ _is_null: false }'
+  }
+
+  return `
+  query($bookIds: [Int!], $userId: Int!, $limit: Int!, $lastId: Int!) {
+    results:user_books(
+      where: { ${conditionsToGraphql(conditions)} }
+      limit: $limit
+      order_by: { id: asc }
+    ) {
+      id,
+      user_id,
+      book_id,
+      rating,
+      status_id
+    }
+  }`
+}
 
 const followsQuery = `
 query($userId: Int!, $limit: Int!, $lastId: Int!) {
@@ -173,12 +197,14 @@ export default (token, setWaiting, queryCallback) => ({
     return user
   },
 
-  myBooks(userId = null) {
-    return this.paginatedQuery(myBookQuery, { userId, limit: 1000 })
+  myBooks(userId = null, options = {}) {
+    const rated = options.rated ?? true
+    return this.paginatedQuery(myBookQuery(rated), { userId, limit: 1000 })
   },
 
-  userRatings(userId, bookIds) {
-    return this.paginatedQuery(otherBookQuery, { userId, bookIds, limit: 5000 })
+  userRatings(userId, bookIds, options = {}) {
+    const rated = options.rated ?? true
+    return this.paginatedQuery(otherBookQuery(rated), { userId, bookIds, limit: 5000 })
   },
 
   async fetchUsers(userIds) {

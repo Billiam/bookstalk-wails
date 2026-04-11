@@ -12,7 +12,7 @@ import Me from '@/components/Me.vue'
 import User from '@/components/User.vue'
 
 const uiStore = useUiStore()
-const { apiKey, user } = storeToRefs(uiStore)
+const { apiKey, user, loadingRatings } = storeToRefs(uiStore)
 
 const preferenceStore = usePreferenceStore()
 const { ranker } = storeToRefs(preferenceStore)
@@ -21,7 +21,6 @@ const advancedVisible = ref(false)
 
 const {
   apiKeyMessage,
-  loadingRatings,
   userList,
   status,
   totalRequests,

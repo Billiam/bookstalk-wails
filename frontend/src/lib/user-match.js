@@ -8,7 +8,7 @@ import { useUiStore } from '@/stores/ui.js'
 
 export const useUserMatch = (ranker) => {
   const uiStore = useUiStore()
-  const { apiKey, user } = storeToRefs(uiStore)
+  const { apiKey, user, loadingRatings } = storeToRefs(uiStore)
 
   const waiting = ref(false)
 
@@ -20,7 +20,6 @@ export const useUserMatch = (ranker) => {
 
   const totalRequests = ref(null)
   const completedRequests = ref(0)
-  const loadingRatings = ref(false)
 
   const client = computed(() => {
     if (apiKey.value) {
@@ -48,6 +47,7 @@ export const useUserMatch = (ranker) => {
   }
 
   const fetchRatings = async () => {
+    userList.value = []
     status.value = 'loading user data'
     apiKeyMessage.value = ''
     loadingRatings.value = true
@@ -66,9 +66,14 @@ export const useUserMatch = (ranker) => {
       user.value = myUserData
 
       status.value = 'fetching my books'
-      const myBookData = (await client.value.myBooks(myUserData.id)).slice(0, 3)
+      const myBookData = await client.value.myBooks(myUserData.id, {
+        rated: !ranker.value.config.includeUnrated,
+      })
 
-      const requestSets = binPack(myBookData, 10000, 100, (item) => item.book.users_count)
+      const userBookCounter = ranker.value.config.includeUnrated
+        ? (item) => item.book.users_count
+        : (item) => item.book.ratings_count
+      const requestSets = binPack(myBookData, 10000, 100, userBookCounter)
 
       status.value = 'fetching user ratings'
 
@@ -84,7 +89,9 @@ export const useUserMatch = (ranker) => {
         const l = await list
         const completedRequestsAfter = completedRequests.value + chunk.requests
 
-        const records = await client.value.userRatings(myUserData.id, chunk.ids)
+        const records = await client.value.userRatings(myUserData.id, chunk.ids, {
+          rated: !ranker.value.config.includeUnrated,
+        })
 
         completedRequests.value = completedRequestsAfter
         l.push(...records)
@@ -112,11 +119,17 @@ export const useUserMatch = (ranker) => {
     }, 250),
   )
 
+  watch(
+    () => ranker.value.config.includeUnrated,
+    () => {
+       return fetchRatings()
+    },
+  )
+
   return {
     apiKeyMessage,
     completedRequests,
     fetchRatings,
-    loadingRatings,
     myBooks,
     otherUserBooks,
     status,

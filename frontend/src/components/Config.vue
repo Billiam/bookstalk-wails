@@ -2,11 +2,15 @@
 import { storeToRefs } from 'pinia'
 
 import { usePreferenceStore } from '@/stores/preference.js'
+import { useUiStore } from '@/stores/ui.js'
 
 import ConfigField from '@/components/ConfigField.vue'
 
 const preferenceStore = usePreferenceStore()
+const uiStore = useUiStore()
+
 const { matrixConfig } = storeToRefs(preferenceStore)
+const { loadingRatings } = storeToRefs(uiStore)
 </script>
 
 <template>
@@ -100,12 +104,27 @@ const { matrixConfig } = storeToRefs(preferenceStore)
       </div>
 
       <div class="row">
-        <label for="neg_penatly" class="mr-1">Bonus to negative values</label>
+        <label for="neg_penalty" class="mr-1">Bonus to negative values</label>
         <ConfigField
           id="neg_penalty"
           :step="0.25"
           v-model.number="matrixConfig.negPenalty"
           @reset="preferenceStore.resetSetting('negPenalty')"
+        />
+      </div>
+
+      <div class="row">
+        <label
+          v-tooltip.top="'Greatly increases number of required queries and time'"
+          for="include_unrated"
+          class="mr-1"
+          :disabled="loadingRatings"
+          ><em>Experimental</em>: include unrated reads</label
+        >
+        <ToggleSwitch
+          id="include_unrated"
+          v-model="matrixConfig.includeUnrated"
+          :disabled="loadingRatings"
         />
       </div>
     </div>
