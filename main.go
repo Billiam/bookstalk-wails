@@ -42,8 +42,7 @@ func setupDevelopmentMenu(app *application.App) {
     menu.AddRole(application.WindowMenu)
     menu.AddRole(application.HelpMenu)
 
-//     menu := app.Menu.New()
-    devMenu := menu.AddSubmenu("test")
+    devMenu := app.Menu.New()
 
     devMenu.Add("Open DevTools").OnClick(func(ctx *application.Context) {
         // This would open browser devtools if available
@@ -62,20 +61,11 @@ func setupDevelopmentMenu(app *application.App) {
         // Open local API docs
         app.Browser.OpenURL("http://localhost:8080/docs")
     })
-
-    app.Menu.Set(menu)
 }
 
 func GinMiddleware(ginEngine *gin.Engine) application.Middleware {
   return func(next http.Handler) http.Handler {
     return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-//       log.Printf("[GIN] %s", r.URL.Path,)
-//         log.Printf("[GIN] %s | %s | %d",
-//             r.Method,
-//             r.URL.Path,
-//             w.Status(),
-//                     )
-
       // Let wails handle everything except API route
       if !strings.HasPrefix(r.URL.Path, "/api") {
         next.ServeHTTP(w, r)
@@ -184,7 +174,9 @@ func main() {
 	app.Window.NewWithOptions(application.WebviewWindowOptions{
 		Title: "BookStalk",
 		Width: 850,
+		MinWidth: 600,
 		Height: 1280,
+		MinHeight: 675,
 		Mac: application.MacWindow{
 			InvisibleTitleBarHeight: 50,
 			Backdrop:                application.MacBackdropTranslucent,
