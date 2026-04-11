@@ -1,4 +1,6 @@
 version: '3'
+env:
+  VITE_HARDCOVER_ENDPOINT: /api/v1/graphql
 
 tasks:
   go:mod:tidy:
@@ -37,10 +39,8 @@ tasks:
           BUILD_FLAGS:
             ref: .BUILD_FLAGS
     cmds:
-      - pnpm run {{.BUILD_COMMAND}} --config ../vite.config.js
+      - pnpm run {{.BUILD_COMMAND}}
     env:
-      NODE_PATH: "{{.ROOT_DIR}}/frontend/node_modules"
-#      NODE_PATH: 'node_modules'
       PRODUCTION: '{{if eq .DEV "true"}}false{{else}}true{{end}}'
     vars:
       BUILD_COMMAND: '{{if eq .DEV "true"}}build:dev{{else}}build{{end}}'
@@ -117,7 +117,7 @@ tasks:
     deps:
       - task: install:frontend:deps
     cmds:
-      - WAILS=true NODE_PATH=node_modules:./frontend/node_modules pnpm run dev --port {{.VITE_PORT}} --strictPort --config ../vite.config.js
+      - pnpm run dev --port {{.VITE_PORT}} --strictPort
 
   update:build-assets:
     summary: Updates the build assets
