@@ -14,7 +14,7 @@ const toggle = (event) => {
     <ul>
       <li>Filter users by activity date</li>
       <li>Consider books in to-read lists</li>
-      <li>Option to consider (and query) only rated books</li>
+      <li>Sort by rating or by book count</li>
       <li>Option to ignore already-followed users</li>
       <li>Logo/banner/favicon etc</li>
       <li>Data caching/partial updates</li>
