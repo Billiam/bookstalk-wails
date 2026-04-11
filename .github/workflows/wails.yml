@@ -17,22 +17,130 @@ jobs:
       matrix:
         build:
           - name: 'App'
-            platform:  'linux/amd64'
+            platform:  'amd64'
             os: 'ubuntu-latest'
           - name: 'App'
-            platform:  'windows/amd64'
+            platform:  'amd64'
             os: 'windows-latest'
           - name: 'App'
-            platform:  'darwin/universal'
+            platform:  'universal'
             os: 'macos-latest'
 
     runs-on: ${{ matrix.build.os }}
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
 
-      - uses: ToQuery/wails3-build-action@ceff82ab39973abacd8189beef08f92592c28013
+      - name: Install linux dependencies
+        if: runner.os == 'Linux'
+        run: |
+          sudo apt update && sudo apt-get -yq install libwebkit2gtk-4.1-dev gcc-aarch64-linux-gnu
+
+      - name: Install windows dependencies
+        if: runner.os == 'Windows'
+        run: choco install nsis -y
+
+#      - uses: ToQuery/wails3-build-action@ceff82ab39973abacd8189beef08f92592c28013
+#        with:
+#          pnpm-build: true
+#          build-obfuscate: false
+
+      # Setup and configure GoLang
+      - name: Setup GoLang
+        uses: actions/setup-go@v6
         with:
-          build-name: ${{ matrix.build.name }}
-          build-platform: ${{ matrix.build.platform }}
-          build-obfuscate: false
+          check-latest: true
+          cache: true
+          cache-dependency-path: 'go.sum'
+          go-version: 1.25.9
+
+
+#      - name: Install Garble
+#        run: go install mvdan.cc/garble@latest
+#        shell: bash
+#        env:
+#          OBFUSCATE: true
+
+      # Setup and configure Node And pnpm
+      - name: Install Node.js
+        uses: actions/setup-node@v6
+        with:
+          node-version: 22.22.1
+
+      - name: Install pnpm
+        uses: pnpm/action-setup@v6
+        with:
+          version: 10
+          run_install: false
+
+
+      # (Optional) Setup and configure Deno
+#      - name: Setup Deno
+#        uses: denoland/setup-deno@v2
+#        if: inputs.deno-build == 'true'
+#        with:
+#          deno-version: ${{inputs.deno-version}}
+#      - name: Run Deno Command
+#        if: inputs.deno-build == 'true'
+#        shell: bash
+#        working-directory: ${{inputs.deno-working-directory}}
+#        run: ${{inputs.deno-build}}
+
+      # install wails
+      - name: Install Wails
+        run: go install github.com/wailsapp/wails/v3/cmd/wails3@v3.0.0-alpha.74
+        shell: bash
+
+      # Building step
+      - name: Set App Build Info
+        run: wails3 task common:update:build-assets
+        shell: bash
+
+      # Wails3 Package
+      - name: Wails3 Package
+        shell: bash
+        run: |
+          ARCHS="${{ matrix.build.platform }}"
+          
+          # 根据 Runner OS 判断
+          if [[ "${{ runner.os }}" == "macOS" ]]; then
+            echo "Detected macOS build"
+            if [[ "$ARCHS" == *"universal"* ]]; then
+              echo "Building macOS universal binary"
+              wails3 task darwin:package:universal
+            fi
+            for arch in $(echo "$ARCHS" | tr ',' ' '); do
+              arch=$(echo $arch | xargs)
+              if [[ "$arch" == "amd64" || "$arch" == "arm64" ]]; then
+                echo "Building macOS $arch binary"
+                ARCH=$arch wails3 package
+              fi
+            done
+          elif [[ "${{ runner.os }}" == "Windows" ]]; then
+            echo "Detected Windows build"
+            for arch in $(echo "$ARCHS" | tr ',' ' '); do
+              arch=$(echo $arch | xargs)
+              if [[ "$arch" == "amd64" || "$arch" == "arm64" ]]; then
+                echo "Building Windows $arch binary"
+                ARCH=$arch wails3 package
+              fi
+            done
+          elif [[ "${{ runner.os }}" == "Linux" ]]; then
+            echo "Detected Linux build"
+            for arch in $(echo "$ARCHS" | tr ',' ' '); do
+              arch=$(echo $arch | xargs)
+              if [[ "$arch" == "amd64" || "$arch" == "arm64" ]]; then
+                echo "Building Linux $arch binary"
+                ARCH=$arch wails3 package
+              fi
+            done
+          else
+            echo "Unsupported OS: ${{ runner.os }}"
+          fi
+
+      # Upload build assets
+      - uses: actions/upload-artifact@v7
+        if: inputs.package == 'true'
+        with:
+          name: Wails Build ${{runner.os}} ${{inputs.go-archs}}
+          path: ./bin/
