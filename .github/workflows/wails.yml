@@ -135,7 +135,7 @@ jobs:
               arch=$(echo $arch | xargs)
               if [[ "$arch" == "amd64" || "$arch" == "arm64" ]]; then
                 echo "Building Linux $arch binary"
-                ARCH=$arch wails3 package
+                ARCH=$arch wails3 build
                 mv bin/bookstalk bin/bookstalk.linux-$arch
               fi
             done
