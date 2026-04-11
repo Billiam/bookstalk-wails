@@ -116,7 +116,9 @@ jobs:
                 echo "Building macOS $arch binary"
                 ARCH=$arch wails3 package
               fi
+              hdiutil create -volname "BookStalk" -srcfolder bin/bookstalk.app -ov -format UDZO bin/bookstalk.dmg
               rm bin/bookstalk
+              rm -r bin/bookstalk.app
             done
           elif [[ "${{ runner.os }}" == "Windows" ]]; then
             echo "Detected Windows build"
