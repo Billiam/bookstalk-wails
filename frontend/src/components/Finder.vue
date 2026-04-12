@@ -12,7 +12,7 @@ import Me from '@/components/Me.vue'
 import User from '@/components/User.vue'
 
 const uiStore = useUiStore()
-const { apiKey, user, loadingRatings } = storeToRefs(uiStore)
+const { apiKey, user, userDateFilter, loadingData } = storeToRefs(uiStore)
 
 const preferenceStore = usePreferenceStore()
 const { ranker } = storeToRefs(preferenceStore)
@@ -28,6 +28,9 @@ const {
 
   fetchRatings,
 } = useUserMatch(ranker)
+
+const now = new Date()
+const hardcoverStartDate = new Date(2021, 9, 2)
 </script>
 
 <template>
@@ -64,9 +67,9 @@ const {
     <Badge class="mb-1" severity="secondary" :value="status" v-if="status" />
     <ProgressBar
       class="mb-1"
-      v-if="loadingRatings"
+      v-if="loadingData"
       :mode="totalRequests == null ? 'indeterminate' : 'determinate'"
-      :value="(completedRequests / totalRequests) * 100"
+      :value="Math.min(100, (completedRequests / totalRequests) * 100)"
     >
       {{ completedRequests }}/{{ totalRequests }}
     </ProgressBar>
@@ -83,7 +86,24 @@ const {
     </Drawer>
 
     <Panel>
-      <DataView :value="userList" paginator :rows="10">
+      <DataView :value="userList" paginator :alwaysShowPaginator="false" :rows="10">
+        <template #header>
+          <FloatLabel>
+            <DatePicker
+              v-model="userDateFilter"
+              selectionMode="range"
+              hideOnRangeSelection
+              :maxDate="now"
+              :minDate="hardcoverStartDate"
+              showButtonBar
+              iconDisplay="input"
+              showIcon
+              inputId="activity_date"
+              size="small"
+            />
+            <label for="activity_date">Filter by activity date</label>
+          </FloatLabel>
+        </template>
         <template #empty>No users found</template>
         <template #list="slotProps">
           <ol class="user-list">
@@ -123,7 +143,6 @@ const {
 .main,
 .menu-content {
   padding: 1rem;
-  max-width: 1024px;
   max-width: 55rem;
   margin: 0 auto;
 }
@@ -139,5 +158,11 @@ const {
   .stalk {
     color: var(--p-primary-color);
   }
+}
+:deep(.p-dataview-header) {
+  margin-bottom: 2rem;
+}
+:deep(.p-panel-header) {
+  padding: 0.5rem;
 }
 </style>

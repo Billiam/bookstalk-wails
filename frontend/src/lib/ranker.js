@@ -108,7 +108,7 @@ export default class Ranker {
     })
   }
 
-  rankUsers(listA, listB, limit = 200) {
+  rankUsers(listA, listB) {
     const myRatings = listA.reduce((lookup, book) => {
       lookup[book.book_id] = this.normalizeUserBook(book)
       return lookup
@@ -125,9 +125,7 @@ export default class Ranker {
       return lookup
     }, {})
 
-    return Object.values(userList)
-      .sort((a, b) => b.score - a.score)
-      .slice(0, limit)
+    return Object.values(userList).sort((a, b) => b.score - a.score)
   }
 
   cacheMatrix() {

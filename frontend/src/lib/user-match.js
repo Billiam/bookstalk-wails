@@ -8,7 +8,7 @@ import { useUiStore } from '@/stores/ui.js'
 
 export const useUserMatch = (ranker) => {
   const uiStore = useUiStore()
-  const { apiKey, user, loadingRatings } = storeToRefs(uiStore)
+  const { apiKey, user, loadingRatings, loadingUsers, userDateFilter } = storeToRefs(uiStore)
 
   const waiting = ref(false)
 
@@ -40,10 +40,35 @@ export const useUserMatch = (ranker) => {
     if (!client.value) {
       return
     }
-    const topUsers = ranker.value.rankUsers(myBooks.value, otherUserBooks.value)
-    const userData = await client.value.fetchUsers(topUsers.map((user) => user.id))
-    const topUserData = topUsers.map((topUser) => ({ ...topUser, ...userData[topUser.id] }))
-    userList.value = Object.freeze(topUserData)
+    loadingUsers.value = true
+    const userLimit = 200
+
+    const dateFilter = userDateFilter.value
+    const allUsers = ranker.value.rankUsers(myBooks.value, otherUserBooks.value)
+    const topUsers = []
+    // TODO: maintain user data list
+
+    while (topUsers.length < userLimit && allUsers.length > 0) {
+      const batchUsers = allUsers.splice(0, 1000)
+      const batchUserData = await client.value.fetchUsers(
+        batchUsers.map((user) => user.id),
+        dateFilter,
+      )
+
+      batchUsers.every((user) => {
+        const lookupData = batchUserData[user.id]
+        if (topUsers.length === userLimit) {
+          return
+        }
+        if (lookupData) {
+          topUsers.push({ ...user, ...lookupData })
+        }
+        return true
+      })
+    }
+
+    userList.value = Object.freeze(topUsers)
+    loadingUsers.value = false
   }
 
   const fetchRatings = async () => {
@@ -78,7 +103,7 @@ export const useUserMatch = (ranker) => {
       status.value = 'fetching user ratings'
 
       const idChunks = requestSets.map((set) => ({
-        requests: Math.ceil(set.volume / 5000),
+        requests: Math.ceil(set.volume / 4000),
         ids: set.items.map((item) => item.book_id),
       }))
       totalRequests.value = idChunks.reduce((result, set) => {
@@ -113,18 +138,16 @@ export const useUserMatch = (ranker) => {
   }
 
   watch(
-    ranker.value.matrix,
-    debounce(() => {
+    [ranker.value.matrix, userDateFilter],
+
+    debounce(async () => {
       return updateRankings()
-    }, 250),
+    }, 1000),
   )
 
-  // watch(
-  //   () => ranker.value.config.includeUnrated,
-  //   () => {
-  //     return fetchRatings()
-  //   },
-  // )
+  watch([() => ranker.value.config.includeUnrated], () => {
+    return fetchRatings()
+  })
 
   return {
     apiKeyMessage,

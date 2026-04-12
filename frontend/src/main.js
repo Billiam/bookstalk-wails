@@ -1,8 +1,8 @@
 import { definePreset } from '@primeuix/themes'
 import Aura from '@primeuix/themes/aura'
+import { Browser } from '@wailsio/runtime'
 import { createPinia } from 'pinia'
 import { createApp } from 'vue'
-import { Browser } from '@wailsio/runtime'
 
 import PrimeVue from 'primevue/config'
 import Tooltip from 'primevue/tooltip'
@@ -45,11 +45,10 @@ app.use(PrimeVue, {
 app.directive('tooltip', Tooltip)
 app.mount('#app')
 
-document.body.addEventListener('click', (e) => {
+const clickEvent = (e) => {
   let target = e.target
 
   while (target !== document.body) {
-    console.log(target)
     if (target.nodeName === 'A') {
       e.preventDefault()
       e.stopPropagation()
@@ -58,10 +57,7 @@ document.body.addEventListener('click', (e) => {
     }
     target = target.parentNode
   }
-  // e.preventDefault()
-  // if (e.target.nodeName === 'A') {
-  //   e.preventDefault()
-  //   e.stopPropagation()
-  //   window.runtime.BrowserOpenURL(e.target.href)
-  // }
-})
+}
+
+document.body.addEventListener('auxclick', clickEvent)
+document.body.addEventListener('click', clickEvent)

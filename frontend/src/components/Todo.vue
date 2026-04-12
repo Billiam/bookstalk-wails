@@ -12,9 +12,8 @@ const toggle = (event) => {
   <Button severity="info" size="small" class="todo-button" label="Todo" @click="toggle" />
   <Popover ref="todo">
     <ul>
-      <li>Filter users by activity date</li>
-      <li>Consider books in to-read lists</li>
-      <li>Sort by rating or by book count</li>
+      <li>Consider books in to-read lists (expensive)</li>
+      <li>Sort by rating or book count</li>
       <li>Option to ignore already-followed users</li>
       <li>Logo/banner/favicon etc</li>
       <li>Data caching/partial updates</li>

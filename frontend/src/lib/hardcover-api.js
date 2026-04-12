@@ -1,17 +1,54 @@
-const otherUserQuery = `
-query($users: [Int!], $lastId: Int!, $limit: Int!) {
-  results:users(
-    where: { id: { _in: $users}, _and: { id: { _gt: $lastId }}},
-    limit: $limit
-    order_by: { id: asc }
-  ) {
-    id,
-    username,
-    cached_image
-    last_activity_at
-  }
-}`
+const toGraphqlDate = (date) => {
+  return (
+    date.getFullYear() +
+    '-' +
+    (date.getMonth() + 1).toString().padStart(2, '0') +
+    '-' +
+    date.getDate().toString().padStart(2, '0') +
+    'T' +
+    date.getHours().toString().padStart(2, '0') +
+    ':' +
+    date.getMinutes().toString().padStart(2, '0') +
+    ':' +
+    date.getSeconds().toString().padStart(2, '0') +
+    '.' +
+    date.getMilliseconds().toString().padEnd(6, '0')
+  )
+}
+const conditionsToGraphql = (conditions) =>
+  Object.entries(conditions)
+    .map(([k, v]) => `${k}: ${v}`)
+    .join(', ')
 
+const andConditionsToGraphql = (conditions) =>
+  '{' + conditions.map(conditionsToGraphql).join('}, {') + '}'
+
+const otherUserQuery = (dateFilter) => {
+  const andConditions = [{ id: '{ _in: $users }' }, { id: '{ _gt: $lastId }' }]
+
+  if (dateFilter?.length > 0) {
+    andConditions.push({ last_activity_at: `{ _gt: "${toGraphqlDate(dateFilter[0])}" }` })
+    if (dateFilter[1]) {
+      const endOfDay = new Date(dateFilter[1])
+      endOfDay.setHours(23, 59, 59, 999)
+      andConditions.push({ last_activity_at: `{ _lte: "${toGraphqlDate(endOfDay)}" }` })
+    }
+  }
+
+  return `
+  query($users: [Int!], $lastId: Int!, $limit: Int!) {
+    results:users(
+      where: { _and: [ ${andConditionsToGraphql(andConditions)} ]}
+      limit: $limit
+      order_by: { id: asc }
+    ) {
+      id,
+      username,
+      cached_image
+      last_activity_at
+    }
+  }`
+}
 const meQuery = `
 query {
   results:me {
@@ -21,11 +58,6 @@ query {
     last_activity_at
   }
 }`
-
-const conditionsToGraphql = (conditions) =>
-  Object.entries(conditions)
-    .map(([k, v]) => `${k}: ${v}`)
-    .join(', ')
 
 const myBookQuery = (rated = true) => {
   const conditions = {
@@ -40,7 +72,7 @@ const myBookQuery = (rated = true) => {
   return `
   query($userId: Int!, $lastId: Int!, $limit: Int!) {
     results:user_books(
-      where: { ${conditionsToGraphql(conditions)} },
+      where: { ${conditionsToGraphql(conditions)} }
       limit: $limit
       order_by: { id: asc }
     ) {
@@ -204,17 +236,18 @@ export default (token, setWaiting, queryCallback) => ({
 
   userRatings(userId, bookIds, options = {}) {
     const rated = options.rated ?? true
-    return this.paginatedQuery(otherBookQuery(rated), { userId, bookIds, limit: 5000 })
+    return this.paginatedQuery(otherBookQuery(rated), { userId, bookIds, limit: 4000 })
   },
 
-  async fetchUsers(userIds) {
+  async fetchUsers(userIds, dateFilter) {
     if (userIds.length === 0) {
       return {}
     }
+
     const userData = await this.paginatedQuery(
-      otherUserQuery,
+      otherUserQuery(dateFilter),
       { users: userIds, limit: 100 },
-      userIds.length,
+      Math.min(userIds.length, 200),
     )
     return userData.reduce((lookup, user) => {
       lookup[user.id] = user
