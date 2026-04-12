@@ -8,6 +8,8 @@ import Ranker from '@/lib/ranker.js'
 import { usePreferenceStore } from '@/stores/preference.js'
 
 import Finder from '@/components/Finder.vue'
+import Theme from '@/components/Theme.vue'
+import Todo from '@/components/Todo.vue'
 
 const preferenceStore = usePreferenceStore()
 const { ranker, matrixConfig } = storeToRefs(preferenceStore)
@@ -27,6 +29,7 @@ watch(
 </script>
 
 <template>
+  <Theme></Theme>
   <Finder></Finder>
   <Todo></Todo>
 </template>

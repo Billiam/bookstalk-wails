@@ -5,6 +5,7 @@ export const useUiStore = defineStore('ui', {
     apiKey: null,
     user: null,
     userDateFilter: null,
+    darkMode: !window.matchMedia || window.matchMedia('(prefers-color-scheme: dark)'),
 
     loadingUsers: false,
     loadingRatings: false,

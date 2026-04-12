@@ -154,7 +154,6 @@ func main() {
 		Name:        "bookstalk",
 		Description: "Find Hardcover users by shared reads",
 		Services: []application.Service{
-			application.NewService(&GreetService{}),
 		},
 		Assets: application.AssetOptions{
 			Handler: application.AssetFileServerFS(assets),

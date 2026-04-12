@@ -1,14 +1,16 @@
 <script setup>
 import { storeToRefs } from 'pinia'
-import { computed } from 'vue'
+import { computed, ref } from 'vue'
 
 import { usePreferenceStore } from '@/stores/preference.js'
+import { useUiStore } from '@/stores/ui.js'
 
 import Config from '@/components/Config.vue'
 
 const preferenceStore = usePreferenceStore()
 
 const { ranker } = storeToRefs(preferenceStore)
+const { darkMode } = storeToRefs(useUiStore())
 
 const range = computed(() => {
   if (ranker.value.matrix) {
@@ -23,12 +25,13 @@ const range = computed(() => {
 
 const colorGrade = (value) => {
   let hue
+  const sl = darkMode.value ? '59.2% 49.1' : '85% 65%'
   if (value > 0) {
     hue = (value / range.value.max) * 100 + 60
   } else {
     hue = 60 - (value / range.value.min) * 60
   }
-  return `hsl(${hue} 59.2% 49.1%)`
+  return `hsl(${hue} ${sl})`
 }
 const filteredMatrix = computed(() => {
   const r = ranker.value

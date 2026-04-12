@@ -1,6 +1,6 @@
 <script setup>
 import { storeToRefs } from 'pinia'
-import { ref } from 'vue'
+import { computed, ref } from 'vue'
 
 import { useUserMatch } from '@/lib/user-match.js'
 import { usePreferenceStore } from '@/stores/preference.js'
@@ -10,9 +10,10 @@ import ApiKey from '@/components/ApiKey.vue'
 import Matrix from '@/components/Matrix.vue'
 import Me from '@/components/Me.vue'
 import User from '@/components/User.vue'
+import UserSkeleton from '@/components/UserSkeleton.vue'
 
 const uiStore = useUiStore()
-const { apiKey, user, userDateFilter, loadingData } = storeToRefs(uiStore)
+const { apiKey, user, userDateFilter, loadingData, darkMode } = storeToRefs(uiStore)
 
 const preferenceStore = usePreferenceStore()
 const { ranker } = storeToRefs(preferenceStore)
@@ -31,6 +32,13 @@ const {
 
 const now = new Date()
 const hardcoverStartDate = new Date(2021, 9, 2)
+
+const toggleDarkModeIcon = computed(() => {
+  return darkMode.value ? 'pi pi-moon' : 'pi pi-sun'
+})
+const toggleDarkMode = () => {
+  darkMode.value = !darkMode.value
+}
 </script>
 
 <template>
@@ -60,6 +68,8 @@ const hardcoverStartDate = new Date(2021, 9, 2)
         label="Advanced"
         icon="pi pi-cog"
       />
+
+      <Button :icon="toggleDarkModeIcon" size="small" @click="toggleDarkMode()" />
     </div>
   </div>
 
@@ -104,7 +114,13 @@ const hardcoverStartDate = new Date(2021, 9, 2)
             <label for="activity_date">Filter by activity date</label>
           </FloatLabel>
         </template>
-        <template #empty>No users found</template>
+        <template #empty>
+          <ol class="user-list" v-if="loadingData">
+            <li v-for="i in 10" :key="i">
+              <UserSkeleton />
+            </li>
+          </ol>
+        </template>
         <template #list="slotProps">
           <ol class="user-list">
             <li v-for="(otherUser, index) in slotProps.items" :key="index">
@@ -136,8 +152,9 @@ const hardcoverStartDate = new Date(2021, 9, 2)
 }
 
 .menu {
-  background-color: var(--p-surface-800);
-  border-bottom: 1px solid var(--p-primary-800);
+  background-color: var(--p-surface-0);
+  //background-color: var(--p-teal-100);
+  border-bottom: 1px solid var(--p-primary-200);
   padding-top: 0.5rem;
 }
 .main,
@@ -154,9 +171,23 @@ const hardcoverStartDate = new Date(2021, 9, 2)
 .logotype {
   font-size: 2rem;
   font-family: serif;
-
+  .book {
+    color: var(--p-primary-950);
+  }
   .stalk {
     color: var(--p-primary-color);
+  }
+}
+
+.darkmode {
+  .menu {
+    background-color: var(--p-surface-800);
+    border-bottom-color: var(--p-primary-800);
+  }
+  .logotype {
+    .book {
+      color: var(--p-primary-50);
+    }
   }
 }
 :deep(.p-dataview-header) {

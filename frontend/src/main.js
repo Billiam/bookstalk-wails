@@ -33,12 +33,12 @@ app.use(PrimeVue, {
           950: '{teal.950}',
         },
       },
-      options: {
-        prefix: 'p',
-        darkModeSelector: 'system',
-        cssLayer: false,
-      },
     }),
+    options: {
+      prefix: 'p',
+      darkModeSelector: '.darkmode',
+      cssLayer: false,
+    },
   },
 })
 
