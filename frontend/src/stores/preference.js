@@ -1,5 +1,7 @@
 import { defineStore } from 'pinia'
 
+import getLocalstorage from '@/stores/get-localstorage'
+
 const defaultSettings = {
   dnfRanking: 0.5,
   treatDnfAsRanked: true,
@@ -16,12 +18,16 @@ const defaultSettings = {
 }
 
 export const usePreferenceStore = defineStore('preference', {
-  state: () => ({
-    matrixConfig: {
-      ...defaultSettings,
-    },
-    ranker: undefined,
-  }),
+  state: () => {
+    const storeDefaults = getLocalstorage('rating-preferences', defaultSettings)
+
+    return {
+      matrixConfig: {
+        ...storeDefaults,
+      },
+      ranker: undefined,
+    }
+  },
   actions: {
     resetSetting(name) {
       this.matrixConfig[name] = defaultSettings[name]

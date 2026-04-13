@@ -45,10 +45,11 @@ app.use(PrimeVue, {
 app.directive('tooltip', Tooltip)
 app.mount('#app')
 
+// disable link navigation
 const clickEvent = (e) => {
   let target = e.target
 
-  while (target !== document.body) {
+  while (target && target !== document.body) {
     if (target.nodeName === 'A') {
       e.preventDefault()
       e.stopPropagation()
