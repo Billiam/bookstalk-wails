@@ -44,7 +44,10 @@ export const useUserMatch = (ranker) => {
     const userLimit = 200
 
     const dateFilter = userDateFilter.value
-    const allUsers = ranker.value.rankUsers(myBooks.value, otherUserBooks.value)
+    const allUsers = ranker.value
+      .rankUsers(myBooks.value, otherUserBooks.value)
+      .filter((user) => user.score > 0)
+
     const topUsers = []
     // TODO: maintain user data list
 
