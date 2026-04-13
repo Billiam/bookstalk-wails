@@ -4,6 +4,7 @@ import { computed } from 'vue'
 import Activity from '@/components/Activity.vue'
 import Link from '@/components/Link.vue'
 import ProfileImage from '@/components/ProfileImage.vue'
+import UserBooks from '@/components/UserBooks.vue'
 
 const props = defineProps({
   user: {
@@ -44,14 +45,17 @@ const followedByMe = computed(() => {
       <Badge class="mr-1" v-if="followingMe" severity="secondary" value="follows you" />
       <Badge v-if="followedByMe" value="following" />
     </div>
+    <div>
+      <UserBooks :books="user.user_books" />
+    </div>
   </div>
 </template>
 
-<style>
+<style scoped>
 .user {
   display: grid;
   align-items: center;
-  grid-template-columns: 5rem 2fr 0.5fr 1fr 1fr;
+  grid-template-columns: 5rem 2fr 0.5fr 1fr 2fr;
 }
 .avatar {
   width: 5rem;

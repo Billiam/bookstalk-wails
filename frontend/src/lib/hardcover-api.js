@@ -60,6 +60,17 @@ const otherUserQuery = (dateFilter) => {
       name
       cached_image
       last_activity_at
+      user_books(limit: 5, order_by: {last_read_date: desc_nulls_last}) {
+        id
+        last_read_date,
+        book {
+          id
+          title
+          release_year
+          cached_image
+          slug
+        }
+      }
     }
   }`
 }
