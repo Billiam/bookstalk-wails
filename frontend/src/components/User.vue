@@ -34,7 +34,7 @@ const followedByMe = computed(() => {
       <Activity :date="user.last_activity_at" />
     </div>
     <Link
-      v-tooltip.top="`${user.count} shared reads`"
+      v-tooltip.top="`${user.count} shared read${user.count === 1 ? '' : 's'}`"
       class="mr-1"
       :href="`https://hardcover.app/@${user.username}/compare`"
       target="_blank"
