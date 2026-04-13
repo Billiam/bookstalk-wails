@@ -9,6 +9,7 @@ const props = defineProps(['user'])
       shape="circle"
       :image="`https://production-img.hardcover.app/enlarge?url=${props.user.cached_image.url}&width=60&height=60&type=webp`"
       size="large"
+      :pt="{ image: { loading: 'lazy' } }"
     />
   </Link>
 </template>

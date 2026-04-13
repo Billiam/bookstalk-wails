@@ -27,12 +27,17 @@ const followedByMe = computed(() => {
       </OverlayBadge>
     </div>
     <div>
-      <Link :href="`https://hardcover.app/@${user.username}`" class="mr-1">
+      <Link :href="`https://hardcover.app/@${user.username}`" class="username">
         <span class="username">@{{ user.username }}</span>
       </Link>
-      <div class="name">{{ user.name }}</div>
+
+      <Link :href="`https://hardcover.app/@${user.username}`" class="name">
+        <span>{{ user.name }}</span>
+      </Link>
+
       <Activity :date="user.last_activity_at" />
     </div>
+
     <Link
       v-tooltip.top="`${user.count} shared read${user.count === 1 ? '' : 's'}`"
       class="mr-1"
@@ -56,6 +61,18 @@ const followedByMe = computed(() => {
   display: grid;
   align-items: center;
   grid-template-columns: 5rem 2fr 0.5fr 1fr 2fr;
+}
+.username,
+.name {
+  text-decoration: none;
+  display: block;
+}
+.name {
+  font-weight: bold;
+  color: var(--p-text-color);
+  span {
+    font-weight: bold;
+  }
 }
 .avatar {
   width: 5rem;

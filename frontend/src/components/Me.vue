@@ -32,7 +32,9 @@ const { user } = storeToRefs(uiStore)
 .name {
   display: block;
   color: var(--p-text-color);
-  font-weight: bold;
   text-decoration: none;
+}
+.name span {
+  font-weight: bold;
 }
 </style>

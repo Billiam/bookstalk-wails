@@ -94,7 +94,13 @@ const toggleDarkMode = () => {
     </Drawer>
 
     <Panel>
-      <DataView :value="userList" paginator :alwaysShowPaginator="false" :rows="10">
+      <DataView
+        :value="userList"
+        paginator
+        :alwaysShowPaginator="false"
+        paginatorPosition="both"
+        :rows="10"
+      >
         <template #header>
           <FloatLabel>
             <DatePicker
@@ -121,7 +127,7 @@ const toggleDarkMode = () => {
         </template>
         <template #list="slotProps">
           <ol class="user-list">
-            <li v-for="(otherUser, index) in slotProps.items" :key="index">
+            <li v-for="(otherUser, index) in slotProps.items" :key="otherUser.id">
               <User :user="otherUser" :me="user" />
             </li>
           </ol>
@@ -140,9 +146,9 @@ const toggleDarkMode = () => {
 <style scoped>
 .user-list {
   list-style-type: none;
-  margin: 0 auto;
+  margin: 1rem auto 0 auto;
   padding: 0;
-  width: 600px;
+  width: 700px;
 
   li {
     margin-bottom: 2rem;
@@ -187,9 +193,6 @@ const toggleDarkMode = () => {
       color: var(--p-primary-50);
     }
   }
-}
-:deep(.p-dataview-header) {
-  margin-bottom: 2rem;
 }
 :deep(.p-panel-header) {
   padding: 0.5rem;
