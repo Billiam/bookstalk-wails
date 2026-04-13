@@ -96,6 +96,7 @@ export const useUserMatch = (ranker) => {
       status.value = 'fetching my books'
       const myBookData = await client.value.myBooks(myUserData.id, {
         rated: !ranker.value.config.includeUnrated,
+        after: ranker.value.config.myBookCutoff,
       })
 
       const userBookCounter = ranker.value.config.includeUnrated
@@ -148,9 +149,18 @@ export const useUserMatch = (ranker) => {
     }, 1000),
   )
 
-  watch([() => ranker.value.config.includeUnrated], () => {
-    return fetchRatings()
-  })
+  watch(
+    [
+      () => [
+        ranker.value.config.includeUnrated,
+        ranker.value.config.myBookCutoff,
+        ranker.value.config.othersBookCutoff,
+      ],
+    ],
+    () => {
+      userList.value = Object.freeze([])
+    },
+  )
 
   return {
     apiKeyMessage,

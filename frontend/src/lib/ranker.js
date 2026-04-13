@@ -117,11 +117,9 @@ export default class Ranker {
     const userList = listB.reduce((lookup, book) => {
       const value = this.normalizeUserBook(book)
       const score = this.lookup(myRatings[book.book_id], value)
-      if (score !== 0) {
-        lookup[book.user_id] ||= { score: 0, count: 0, id: book.user_id }
-        lookup[book.user_id].score += score
-        lookup[book.user_id].count++
-      }
+      lookup[book.user_id] ||= { score: 0, count: 0, id: book.user_id }
+      lookup[book.user_id].score += score
+      lookup[book.user_id].count++
       return lookup
     }, {})
 

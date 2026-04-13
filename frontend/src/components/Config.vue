@@ -1,6 +1,7 @@
 <script setup>
 import { storeToRefs } from 'pinia'
 
+import { now } from '@/lib/dates.js'
 import { usePreferenceStore } from '@/stores/preference.js'
 import { useUiStore } from '@/stores/ui.js'
 
@@ -114,6 +115,38 @@ const { loadingRatings } = storeToRefs(uiStore)
           v-model.number="matrixConfig.negPenalty"
           @reset="preferenceStore.resetSetting('negPenalty')"
         />
+      </div>
+
+      <div class="row">
+        <label for="my_book_cutoff" class="mr-1">Ignore my books before</label>
+        <ConfigField @reset="preferenceStore.resetSetting('myBookCutoff')">
+          <DatePicker
+            v-model="matrixConfig.myBookCutoff"
+            view="month"
+            :maxDate="now"
+            showButtonBar
+            iconDisplay="input"
+            showIcon
+            inputId="my_book_cutoff"
+            size="small"
+          />
+        </ConfigField>
+      </div>
+
+      <div class="row">
+        <label for="others_book_cutoff" class="mr-1">Ignore others&rsquo; books before</label>
+        <ConfigField @reset="preferenceStore.resetSetting('othersBookCutoff')">
+          <DatePicker
+            v-model="matrixConfig.othersBookCutoff"
+            view="month"
+            :maxDate="now"
+            showButtonBar
+            iconDisplay="input"
+            showIcon
+            inputId="others_book_cutoff"
+            size="small"
+          />
+        </ConfigField>
       </div>
 
       <div class="row">

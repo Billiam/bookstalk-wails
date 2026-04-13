@@ -2,6 +2,7 @@
 import { storeToRefs } from 'pinia'
 import { computed, ref } from 'vue'
 
+import { hardcoverStartDate, now } from '@/lib/dates.js'
 import { useUserMatch } from '@/lib/user-match.js'
 import { usePreferenceStore } from '@/stores/preference.js'
 import { useUiStore } from '@/stores/ui.js'
@@ -29,9 +30,6 @@ const {
 
   fetchRatings,
 } = useUserMatch(ranker)
-
-const now = new Date()
-const hardcoverStartDate = new Date(2021, 9, 2)
 
 const toggleDarkModeIcon = computed(() => {
   return darkMode.value ? 'pi pi-moon' : 'pi pi-sun'

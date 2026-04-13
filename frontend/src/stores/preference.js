@@ -15,11 +15,23 @@ const defaultSettings = {
   negPenalty: 0,
   ignoreFriends: false,
   includeUnrated: false,
+  myBookCutoff: null,
+  othersBookCutoff: null,
 }
 
 export const usePreferenceStore = defineStore('preference', {
   state: () => {
     const storeDefaults = getLocalstorage('rating-preferences', defaultSettings)
+
+    ;['myBookCutoff', 'othersBookCutoff'].forEach((dateKey) => {
+      if (storeDefaults[dateKey] != null) {
+        try {
+          storeDefaults[dateKey] = new Date(storeDefaults[dateKey])
+        } catch {
+          storeDefaults[dateKey] = null
+        }
+      }
+    })
 
     return {
       matrixConfig: {
