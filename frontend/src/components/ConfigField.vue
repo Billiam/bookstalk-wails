@@ -14,25 +14,27 @@ const emit = defineEmits(['reset'])
 
 <template>
   <div class="field-wrapper">
-    <InputNumber
-      v-model="model"
-      showButtons
-      buttonLayout="horizontal"
-      :id="props.id"
-      :step="props.step"
-      :min="props.min"
-      :max="props.max"
-      :disabled="props.disabled"
-      size="small"
-      fluid
-    >
-      <template #incrementbuttonicon>
-        <span class="pi pi-plus" />
-      </template>
-      <template #decrementbuttonicon>
-        <span class="pi pi-minus" />
-      </template>
-    </InputNumber>
+    <slot>
+      <InputNumber
+        v-model="model"
+        showButtons
+        buttonLayout="horizontal"
+        :id="props.id"
+        :step="props.step"
+        :min="props.min"
+        :max="props.max"
+        :disabled="props.disabled"
+        size="small"
+        fluid
+      >
+        <template #incrementbuttonicon>
+          <span class="pi pi-plus" />
+        </template>
+        <template #decrementbuttonicon>
+          <span class="pi pi-minus" />
+        </template>
+      </InputNumber>
+    </slot>
   </div>
   <Button aria-label="reset" @click="emit('reset')" icon="pi pi-undo" size="small" />
 </template>

@@ -18,7 +18,10 @@ const { loadingRatings } = storeToRefs(uiStore)
     <div class="form">
       <div class="row">
         <label for="treat_dnf_as_ranked" class="mr-1">Treat DNF as a rating</label>
-        <ToggleSwitch id="treat_dnf_as_ranked" v-model="matrixConfig.treatDnfAsRanked" />
+
+        <ConfigField @reset="preferenceStore.resetSetting('treatDnfAsRanked')">
+          <ToggleSwitch id="treat_dnf_as_ranked" v-model="matrixConfig.treatDnfAsRanked" />
+        </ConfigField>
       </div>
       <div class="row">
         <label for="dnf_ranking" class="mr-1">DNF rating equivalent</label>
@@ -121,11 +124,13 @@ const { loadingRatings } = storeToRefs(uiStore)
           :disabled="loadingRatings"
           ><em>Experimental</em>: include unrated reads</label
         >
-        <ToggleSwitch
-          id="include_unrated"
-          v-model="matrixConfig.includeUnrated"
-          :disabled="loadingRatings"
-        />
+        <ConfigField @reset="preferenceStore.resetSetting('includeUnrated')">
+          <ToggleSwitch
+            id="include_unrated"
+            v-model="matrixConfig.includeUnrated"
+            :disabled="loadingRatings"
+          />
+        </ConfigField>
       </div>
     </div>
   </Fieldset>
