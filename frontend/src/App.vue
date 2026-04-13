@@ -11,6 +11,7 @@ import { useUiStore } from '@/stores/ui.js'
 import Finder from '@/components/Finder.vue'
 import Theme from '@/components/Theme.vue'
 import Todo from '@/components/Todo.vue'
+import UrlDisplay from '@/components/UrlDisplay.vue'
 
 const uiStore = useUiStore()
 const preferenceStore = usePreferenceStore()
@@ -43,6 +44,7 @@ Object.entries({ apiKey, user, userDateFilter, darkMode }).forEach(([key, item])
   <Theme></Theme>
   <Finder></Finder>
   <Todo></Todo>
+  <UrlDisplay></UrlDisplay>
 </template>
 
 <style>

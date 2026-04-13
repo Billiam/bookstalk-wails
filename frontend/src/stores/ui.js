@@ -21,6 +21,7 @@ export const useUiStore = defineStore('ui', {
 
     loadingUsers: false,
     loadingRatings: false,
+    activeUrl: null,
   }),
 
   getters: {
