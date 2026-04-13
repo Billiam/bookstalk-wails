@@ -209,6 +209,10 @@ export default (token, setWaiting, queryCallback) => ({
       variables,
     })
 
+    if (import.meta.env.DEV) {
+      console.debug(query, variables)
+    }
+
     lastQueryTime = new Date().getTime()
 
     const response = await fetch(import.meta.env.VITE_HARDCOVER_ENDPOINT, {
