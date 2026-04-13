@@ -1,23 +1,23 @@
 const toGraphqlDate = (date) => {
   return (
-    date.getFullYear() +
+    date.getUTCFullYear() +
     '-' +
-    (date.getMonth() + 1).toString().padStart(2, '0') +
+    (date.getUTCMonth() + 1).toString().padStart(2, '0') +
     '-' +
-    date.getDate().toString().padStart(2, '0')
+    date.getUTCDate().toString().padStart(2, '0')
   )
 }
 const toGraphqlDateTime = (date) => {
   return (
     toGraphqlDate(date) +
     'T' +
-    date.getHours().toString().padStart(2, '0') +
+    date.getUTCHours().toString().padStart(2, '0') +
     ':' +
-    date.getMinutes().toString().padStart(2, '0') +
+    date.getUTCMinutes().toString().padStart(2, '0') +
     ':' +
-    date.getSeconds().toString().padStart(2, '0') +
+    date.getUTCSeconds().toString().padStart(2, '0') +
     '.' +
-    date.getMilliseconds().toString().padEnd(6, '0')
+    date.getUTCMilliseconds().toString().padEnd(6, '0')
   )
 }
 
