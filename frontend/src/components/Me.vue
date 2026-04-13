@@ -12,15 +12,27 @@ const { user } = storeToRefs(uiStore)
 </script>
 
 <template>
-  <div class="user" v-if="user">
+  <div class="user mb-1" v-if="user">
     <ProfileImage :user="user" />
+
     <div>
-      <Link :href="`https://hardcover.app/@${user.username}`" class="mr-1">
+      <Link :href="`https://hardcover.app/@${user.username}`">
         <span class="username">@{{ user.username }}</span>
       </Link>
-      <div>
-        <Activity :date="user.last_activity_at" />
-      </div>
+
+      <Link :href="`https://hardcover.app/@${user.username}`" class="name">
+        <span>{{ user.name }}</span>
+      </Link>
+      <Activity :date="user.last_activity_at" />
     </div>
   </div>
 </template>
+
+<style scoped>
+.name {
+  display: block;
+  color: var(--p-text-color);
+  font-weight: bold;
+  text-decoration: none;
+}
+</style>

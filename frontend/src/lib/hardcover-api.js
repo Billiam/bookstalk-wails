@@ -42,8 +42,9 @@ const otherUserQuery = (dateFilter) => {
       limit: $limit
       order_by: { id: asc }
     ) {
-      id,
-      username,
+      id
+      username
+      name
       cached_image
       last_activity_at
     }
@@ -52,9 +53,10 @@ const otherUserQuery = (dateFilter) => {
 const meQuery = `
 query {
   results:me {
-    id,
-    username,
-    cached_image,
+    id
+    username
+    name
+    cached_image
     last_activity_at
   }
 }`
@@ -77,8 +79,8 @@ const myBookQuery = (rated = true) => {
       order_by: { id: asc }
     ) {
       id,
-      book_id,
-      status_id,
+      book_id
+      status_id
       rating
       book {
         users_count
@@ -108,9 +110,9 @@ const otherBookQuery = (rated = true) => {
       order_by: { id: asc }
     ) {
       id,
-      user_id,
-      book_id,
-      rating,
+      user_id
+      book_id
+      rating
       status_id
     }
   }`

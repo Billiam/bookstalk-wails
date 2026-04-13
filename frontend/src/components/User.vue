@@ -29,10 +29,8 @@ const followedByMe = computed(() => {
       <Link :href="`https://hardcover.app/@${user.username}`" class="mr-1">
         <span class="username">@{{ user.username }}</span>
       </Link>
-
-      <div>
-        <Activity :date="user.last_activity_at" />
-      </div>
+      <div class="name">{{ user.name }}</div>
+      <Activity :date="user.last_activity_at" />
     </div>
     <Link
       v-tooltip.top="`${user.count} shared reads`"
@@ -42,8 +40,10 @@ const followedByMe = computed(() => {
     >
       <Tag severity="secondary" :value="user.count" icon="pi pi-book" />
     </Link>
-    <Badge class="mr-1" v-if="followingMe" severity="secondary" value="follows you" />
-    <Badge v-if="followedByMe" value="following" />
+    <div>
+      <Badge class="mr-1" v-if="followingMe" severity="secondary" value="follows you" />
+      <Badge v-if="followedByMe" value="following" />
+    </div>
   </div>
 </template>
 

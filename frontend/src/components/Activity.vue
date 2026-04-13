@@ -20,9 +20,9 @@ const activityDate = computed(() => {
 </script>
 
 <template>
-  <span :title="date?.toLocaleString()" class="activity" v-if="activityDate"
-    >active {{ activityDate }}</span
-  >
+  <div :title="date?.toLocaleString()" class="activity" v-if="activityDate">
+    active {{ activityDate }}
+  </div>
 </template>
 
 <style scoped>
