@@ -32,17 +32,24 @@ const andConditionsToGraphql = (conditions) =>
 const otherUserQuery = (dateFilter) => {
   const andConditions = [{ id: '{ _in: $users }' }, { id: '{ _gt: $lastId }' }]
 
+  const params = {
+    $users: '[Int!]',
+    $lastId: 'Int!',
+    $limit: 'Int!',
+  }
+
   if (dateFilter?.length > 0) {
-    andConditions.push({ last_activity_at: `{ _gt: "${toGraphqlDateTime(dateFilter[0])}" }` })
+    params['$fromDate'] = 'timestamp'
+    andConditions.push({ last_activity_at: `{ _gt: $fromDate }` })
+
     if (dateFilter[1]) {
-      const endOfDay = new Date(dateFilter[1])
-      endOfDay.setHours(23, 59, 59, 999)
-      andConditions.push({ last_activity_at: `{ _lte: "${toGraphqlDateTime(endOfDay)}" }` })
+      params['$toDate'] = 'timestamp'
+      andConditions.push({ last_activity_at: `{ _lte: $toDate }` })
     }
   }
 
   return `
-  query($users: [Int!], $lastId: Int!, $limit: Int!) {
+  query( ${conditionsToGraphql(params)} ) {
     results:users(
       where: { _and: [ ${andConditionsToGraphql(andConditions)} ]}
       limit: $limit
@@ -280,10 +287,21 @@ export default (token, setWaiting, queryCallback) => ({
     if (userIds.length === 0) {
       return {}
     }
+    const variables = { users: userIds, limit: 100 }
+    if (dateFilter) {
+      if (dateFilter[0]) {
+        variables.fromDate = toGraphqlDateTime(dateFilter[0])
+      }
+      if (dateFilter[1]) {
+        const endOfDay = new Date(dateFilter[1])
+        endOfDay.setHours(23, 59, 59, 999)
+        variables.toDate = toGraphqlDateTime(endOfDay)
+      }
+    }
 
     const userData = await this.paginatedQuery(
       otherUserQuery(dateFilter),
-      { users: userIds, limit: 100 },
+      variables,
       Math.min(userIds.length, 200),
     )
     return userData.reduce((lookup, user) => {
