@@ -49,7 +49,7 @@ export const useUserMatch = (ranker) => {
     // TODO: maintain user data list
 
     while (topUsers.length < userLimit && allUsers.length > 0) {
-      const batchUsers = allUsers.splice(0, 1000)
+      const batchUsers = allUsers.splice(0, 200)
       const batchUserData = await client.value.fetchUsers(
         batchUsers.map((user) => user.id),
         dateFilter,
