@@ -16,12 +16,13 @@
   "dependencies": {
     "@primeuix/themes": "^2.0.3",
     "@trivago/prettier-plugin-sort-imports": "^6.0.2",
+    "@wailsio/runtime": "latest",
+    "alea": "^1.0.1",
     "perfect-debounce": "^2.1.0",
     "pinia": "^3.0.4",
     "primeicons": "^7.0.0",
     "primevue": "^4.5.4",
-    "vue": "^3.5.30",
-    "@wailsio/runtime": "latest"
+    "vue": "^3.5.30"
   },
   "devDependencies": {
     "@eslint/js": "^10.0.1",
