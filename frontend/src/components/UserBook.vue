@@ -33,12 +33,14 @@ const bookDescription = computed(
 const bookUrl = computed(() => `https://hardcover.app/books/${props.book.book.slug}`)
 </script>
 <template>
-  <div v-tooltip.top="{ value: bookDescription, showDelay: 100 }" class="book">
-    <Link :href="bookUrl">
-      <div>
-        <img :src="image" width="50" loading="lazy" />
-        <p class="title" v-if="!hasImage">{{ truncatedTitle }}</p>
-      </div>
+  <div class="book">
+    <Link
+      :href="bookUrl"
+      class="booklink"
+      v-tooltip.top="{ value: bookDescription, showDelay: 150 }"
+    >
+      <img :src="image" loading="lazy" class="cover" />
+      <p class="title" v-if="!hasImage">{{ truncatedTitle }}</p>
     </Link>
   </div>
 </template>
@@ -47,25 +49,43 @@ const bookUrl = computed(() => `https://hardcover.app/books/${props.book.book.sl
   position: relative;
   margin-right: 0.2rem;
   width: 50px;
-  transition: transform 0.1s ease;
+  height: 75px;
+
   &:hover {
-    z-index: 10;
-    transform: scale(2);
+    .booklink {
+      z-index: 10;
+      width: 100px;
+      height: 150px;
+      top: -37.5px;
+      left: -25px;
+    }
+    .title {
+      font-size: 1rem;
+    }
   }
 }
-img {
+.booklink {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 50px;
+  height: 75px;
   display: block;
-  border-radius: 0.2rem;
+  overflow: hidden;
+  transition: all 0.1s ease;
+}
+.cover {
+  display: block;
   width: 100%;
+  border-radius: 0.3rem;
 }
 .title {
   color: #fff;
   text-decoration: none;
-}
-p {
+  font-family: serif;
   position: absolute;
   bottom: 0;
-  font-size: 0.8rem;
+  font-size: 0.7rem;
   line-height: 1;
   padding: 2px;
   margin: 0;
