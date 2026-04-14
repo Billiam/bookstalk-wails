@@ -120,6 +120,7 @@ export const useUserMatch = (ranker) => {
 
         const records = await client.value.userRatings(myUserData.id, chunk.ids, {
           rated: !ranker.value.config.includeUnrated,
+          after: ranker.value.config.othersBookCutoff,
         })
 
         completedRequests.value = completedRequestsAfter
