@@ -157,7 +157,6 @@ const toggleDarkMode = () => {
 
 .menu {
   background-color: var(--p-surface-0);
-  //background-color: var(--p-teal-100);
   border-bottom: 1px solid var(--p-primary-200);
   padding-top: 0.5rem;
 }

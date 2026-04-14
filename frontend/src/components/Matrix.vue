@@ -81,9 +81,6 @@ const filteredMatrix = computed(() => {
   table-layout: fixed;
   height: 1px;
   width: 1px;
-  //-webkit-text-stroke: 3px #000;
-  //-webkit-text-combine: all;
-  //paint-order: stroke fill;
 }
 
 th,
