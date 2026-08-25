@@ -53,7 +53,7 @@ const toggleDarkMode = () => {
               type="submit"
               size="small"
               label="Fetch"
-              :disabled="!apiKey || apiKey?.length < 300"
+              :disabled="!apiKey || apiKey?.length < 45"
             />
           </div>
         </div>
