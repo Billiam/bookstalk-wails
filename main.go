@@ -51,16 +51,6 @@ func setupDevelopmentMenu(app *application.App) {
             window.OpenDevTools()
         }
     })
-
-    devMenu.Add("View Source").OnClick(func(ctx *application.Context) {
-        // Open source code repository
-        app.Browser.OpenURL("https://github.com/youruser/yourapp")
-    })
-
-    devMenu.Add("API Documentation").OnClick(func(ctx *application.Context) {
-        // Open local API docs
-        app.Browser.OpenURL("http://localhost:8080/docs")
-    })
 }
 
 func GinMiddleware(ginEngine *gin.Engine) application.Middleware {
@@ -125,11 +115,6 @@ func main() {
   // Add middlewares
   ginEngine.Use(gin.Recovery())
 //   ginEngine.Use(LoggingMiddleware()) // Your custom middleware
-
-  // Define routes
-//   ginEngine.GET("/", func(c *gin.Context) {
-//       // Serve your main page
-//   })
 
   target, _ := url.Parse("https://api.hardcover.app")
   proxy := httputil.NewSingleHostReverseProxy(target)

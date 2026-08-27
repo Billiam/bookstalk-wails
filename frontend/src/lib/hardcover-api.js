@@ -184,6 +184,21 @@ query($userId: Int!, $limit: Int!, $lastId: Int!) {
 let executed = false
 let lastQueryTime = 0
 
+// const waitFor = (time) =>
+//   new Promise((resolve) => {
+//     setTimeout(resolve, time)
+//   })
+//
+// const withTimeoutBackoff((cb, limit) => {
+//   let tries = 1
+//   let wait = 2
+//     cb()
+//   if (limit < tries) {
+//   wait = wait * 2
+//   }
+//
+// })
+
 export default (token, setWaiting, queryCallback) => ({
   wait() {
     return new Promise((resolve) => {
