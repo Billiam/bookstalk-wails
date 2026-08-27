@@ -47,11 +47,18 @@ const toggleDarkMode = () => {
       <form @submit.prevent="fetchRatings">
         <div class="flex flex-column">
           <div class="flex">
-            <ApiKey class="mr-1" :invalid="apiKeyMessage"></ApiKey>
+            <div>
+              <ApiKey class="mr-1" :invalid="apiKeyMessage"></ApiKey>
+              <a
+                href="https://hardcover.app/account/api/keys/new?scope=read%3Acatalog%3Adata+read%3Alibrary%3Apublic+read%3Alibrary%3Aprivate+read%3Ame%3Acontent+read%3Ausers+read%3Asocial"
+                class="key-link"
+                >Need an API key?</a
+              >
+            </div>
             <Button
               severity="primary"
               type="submit"
-              size="small"
+              size="medium"
               label="Fetch"
               :disabled="!apiKey || apiKey?.length < 45"
             />
@@ -181,7 +188,10 @@ const toggleDarkMode = () => {
     color: var(--p-primary-color);
   }
 }
-
+.key-link {
+  font-size: 0.8rem;
+  line-height: 1;
+}
 .darkmode {
   .menu {
     background-color: var(--p-surface-800);
