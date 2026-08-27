@@ -1,6 +1,8 @@
 <script setup>
 import { computed } from 'vue'
 
+import { roundPlaces } from '@/lib/number.js'
+
 import Activity from '@/components/Activity.vue'
 import Link from '@/components/Link.vue'
 import ProfileImage from '@/components/ProfileImage.vue'
@@ -22,7 +24,12 @@ const followedByMe = computed(() => {
 <template>
   <div class="user mb-2">
     <div class="avatar">
-      <OverlayBadge :value="user.score" severity="primary" class="mr-2" size="small">
+      <OverlayBadge
+        :value="roundPlaces(user.score, 2)"
+        severity="primary"
+        class="mr-2"
+        size="small"
+      >
         <ProfileImage :user="user" />
       </OverlayBadge>
     </div>
@@ -47,7 +54,7 @@ const followedByMe = computed(() => {
       <Tag severity="secondary" :value="user.count" icon="pi pi-book" />
     </Link>
     <div>
-      <Badge class="mr-1" v-if="followingMe" severity="secondary" value="follows you" />
+      <Badge class="mr-1" v-if="followingMe" severity="secondary" value="follows&nbsp;you" />
       <Badge v-if="followedByMe" value="following" />
     </div>
     <div>
@@ -60,7 +67,7 @@ const followedByMe = computed(() => {
 .user {
   display: grid;
   align-items: center;
-  grid-template-columns: 5rem 2fr 0.5fr 1fr 2fr;
+  grid-template-columns: 5rem 2fr 0.5fr 1.25fr 2fr;
 }
 .username,
 .name {
